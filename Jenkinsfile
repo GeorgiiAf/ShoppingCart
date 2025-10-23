@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: ''
+                git branch: 'master', url: 'https://github.com/GeorgiiAf/ShoppingCart'
             }
         }
 
