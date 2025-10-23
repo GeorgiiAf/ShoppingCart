@@ -1,11 +1,13 @@
 pipeline {
     agent any
+
     environment {
         PATH = "C:\\Program Files\\Docker\\Docker\\resources\\bin;${env.PATH}"
         DOCKERHUB_CREDENTIALS_ID = 'Docker_Hub'
         DOCKERHUB_REPO = 'georgiiafa/shoppingcart'
         DOCKER_IMAGE_TAG = 'latest'
     }
+
     stages {
         stage('Checkout') {
             steps {
@@ -18,21 +20,25 @@ pipeline {
                 bat 'mvn clean install -DskipTests'
             }
         }
+
         stage('Test') {
             steps {
                 bat 'mvn test'
             }
         }
+
         stage('Code Coverage') {
             steps {
                 bat 'mvn jacoco:report'
             }
         }
+
         stage('Publish Test Results') {
             steps {
                 junit '**/target/surefire-reports/*.xml'
             }
         }
+
         stage('Publish Coverage Report') {
             steps {
                 jacoco()
@@ -41,8 +47,8 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                // Build Docker image
                 script {
+                    echo "Building Docker image ${DOCKERHUB_REPO}:${DOCKER_IMAGE_TAG}"
                     docker.build("${DOCKERHUB_REPO}:${DOCKER_IMAGE_TAG}", ".")
                 }
             }
@@ -50,14 +56,13 @@ pipeline {
 
         stage('Push Docker Image to Docker Hub') {
             steps {
-                // Push Docker image to Docker Hub
                 script {
+                    echo "Pushing Docker image to Docker Hub..."
                     docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS_ID) {
                         docker.image("${DOCKERHUB_REPO}:${DOCKER_IMAGE_TAG}").push()
                     }
                 }
             }
         }
-
     }
 }
