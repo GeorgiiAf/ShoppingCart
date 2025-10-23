@@ -3,8 +3,8 @@ pipeline {
     environment {
         PATH = "C:\\Program Files\\Docker\\Docker\\resources\\bin;${env.PATH}"
         DOCKERHUB_CREDENTIALS_ID = 'Docker_Hub'
-        DOCKER_REPO = 'georgiiafa/shoppingcart'
-        DOCKER_TAG = 'latest'
+        DOCKERHUB_REPO = 'georgiiafa/shoppingcart'
+        DOCKER_IMAGE_TAG = 'latest'
     }
     stages {
         stage('Checkout') {
